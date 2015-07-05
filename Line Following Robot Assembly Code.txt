@@ -1,0 +1,96 @@
+;All this is for ADCON0
+;/                 x___ not configured (always set to 0)
+;//                 _xxx Adress of pins to read (000 = an0 / 001 = an1)
+;//                 _____x GO/Done Bit
+;//                 _______x adc enable bit 1 = on / 0 = off (consumes no power in off state)
+	; use PIC 16F684
+	list		p=16f684
+	#include	<p16f684.inc>
+	errorlevel -302
+	; set configuration word.
+	__CONFIG	_FCMEN_OFF & _IESO_OFF & _BOD_OFF & _CPD_OFF & _CP_OFF & _MCLRE_OFF & _PWRTE_OFF & _WDT_OFF & _INTRC_OSC_NOCLKOUT
+
+
+	; -------------------------------------------------------
+	; reset vector.  this is where the PCL is set after
+	; power on and reset.
+	; -------------------------------------------------------
+
+	org	0x00
+	goto loop ;starts to execute at subroutine loop
+
+
+
+MOTOR1Left 
+
+	bcf STATUS, RP0
+	movlw B'00100000'
+	movwf PORTA 
+
+	goto start
+
+  
+MOTOR1Right
+
+	bcf STATUS, RP0
+	movlw B'00010000'
+	movwf PORTA
+ 	goto start
+
+loop ; starting point
+
+
+;===============================================================================================================
+
+
+	movlw 7
+	movwf CMCON0 ;comparator that needs to be turned off
+
+
+;===============================================================================================================
+
+
+	bsf STATUS, RP0		;bit set function
+	movlw B'00110000' 	;able to use the Frc, which is the internal clock 
+	movwf ADCON1
+
+	bsf STATUS, RP0
+	movlw B'11001111' ;RA4, RA5 as output 
+	movwf TRISA		  
+
+	bcf STATUS, RP0		;bit clear function
+	movlw B'00010000'	
+	movwf PORTA		
+
+	bsf STATUS, RP0
+	movlw B'00000011'	;analogue pin / turns on analog pin AN0 and AN1
+	movwf ANSEL			
+
+
+;===============================================================================================================
+
+
+
+	bcf STATUS, RP0			
+	movlw B'10000001'	;Right justified and turns conversion on   
+	movwf ADCON0	
+
+start
+	bsf ADCON0, GO		;Go means second bit of ADCON0 .This will set the 0 bit in ADCON0 as 1 to start the conversion
+
+check
+	btfsc ADCON0, GO    ;will check if it is 1 ,if not 1 will go to next line, if 1 will skip next line 
+	goto check	
+
+	
+	btfsc ADRESH,1      ;Will check if the first bit of ADRESH is either '1' or '0'
+					;If it is '1' it will execute the next line if not it will skip the next line
+
+	goto MOTOR1Left			;turns on motor 1 Left
+	goto MOTOR1Right		;turns on motor 1 Right
+
+
+	goto loop			;goes back and repeats everythnig
+
+
+	end
