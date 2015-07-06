@@ -2,6 +2,7 @@
 \usepackage{graphicsx}
 \graphicspath{{images/}}
 \usepackage{sidecap}
+\usepackage{hyperref}
 
 % Title Page
 \title{PIC16F684 Line-Following Robot}
@@ -16,14 +17,12 @@
 \newpage
 
 \section{Abstract}	
-The robot is designed to follow a specified black line made out of electrical tape on a white surface. The programming was done using the assembly language on the PIC 16F684 microcontroller (herein referred to as PIC microcontroller), whereas the motor control was handled by the L293DNE chip.
+The robot is designed to follow a specified black line made out of electrical tape on a white surface. The programming was done using the assembly language on the PIC16F684 microcontroller (herein referred to as PIC microcontroller), whereas the motor control was handled by the L293DNE chip.
 \\[\baselineskip]
-This report details the design and development of the line following robot including the purpose, materials and the initial and final designs of the robot. The construction of the robot involved the mounting of two light sensors, the PIC microcontroller and a breadboard for the circuit onto a pre-built robot chassis. Furthermore, this report also includes a detailed step-by-step construction of the robot that the reader can follow to recreate the robot. Lastly, the report includes problem diagnosis stating the description and root cause, symptoms, and solutions and design changes. The appendix includes layout diagrams of the robot and the circuit as well as pictures of the final robot, program flowchart, the final code and links to datasheets for the components used are located in the appendix.
+This report details the design and development of the line following robot including the purpose, materials and the design of the robot. The construction of the robot involved the mounting of two light sensors, the PIC microcontroller and a breadboard for the circuit onto a pre-built robot chassis. The report includes problem diagnosis stating the description and root cause, symptoms, and solutions and design changes. The appendix includes layout diagrams of the robot and the circuit as well as pictures of the final robot, program flowchart, the final code and links to datasheets for the components used are located in the appendix.
 
 \section{Objective}
-The objective of this project, as assigned in class, is to build an autonomous line following robot using the PIC microcontroller and light sensors. The two light sensors are used to allow the robot to detect a black line on a white surface while the L293DNE controls the movement of the robot.
-\\[\baselineskip]
-The original goal of the robot was to use an algorithm that will keep the robot centred on the black line while it completes one lap of a track outlined with black electrical tap on a white surface in 60 seconds. However, midway through the project, due to technical difficulties combined with time constraints, the goal was changed so that the robot is using a hardcoded algorithm that will allow the robot to complete the track from point A to point B in 45 seconds. In these 45 seconds, the robot must start at one end of the course, reach the other end, and come to a complete stop at the end of the track.
+The objective of this project was to build an autonomous line following robot using the PIC microcontroller and light sensors. The two light sensors were used to allow the robot to detect a black line on a white surface while the L293DNE controlled the movement of the robot. The robot was made to complete the track from point A to point B in 45 seconds. In these 45 seconds, the robot must start at one end of the course, reach the other end, and come to a complete stop at the end of the track.
 
 \section{Components}
 \subsection{PIC16F684 Microcontroller}
@@ -75,7 +74,7 @@ A breadboard is used for easy construction and debugging of the robot’s circui
 	\item Connect an external power supply to power all the components - PIC microcontroller, sensors and L293DNE - with 5V through the voltage regulator.
 	\item Connect the ground of all components - PIC microcontroller, sensors and L293DNE - to the ground of the power supply. 
 	
-	\textit{Refer to the attached document for a full schematic of the motor controller circuit. The sensor circuit has been omitted as it was not used in the final design of the robot.}
+	\textit{Refer to the attached document for a full schematic of the motor controller circuit.}
 \end{enumerate}
 
 \subsection{Hardware}
@@ -83,7 +82,7 @@ A breadboard is used for easy construction and debugging of the robot’s circui
 	\item Using screws and brackets, attach the sensors 3.5 cm apart in width to allow it to straddle the line which is approximately 2 cm in width. This gives the robot approximately 0.75 cm on each side of the line to detect the white surface.
 	\item Ensure they are approximately 2 mm above the ground to receive accurate readings from the sensors.
 	\item Mount the sensors 1mm in front of the robot in order to ensure easy accessibility to the sensor wiring for debugging.
-	\item Mount the breadboard containing the sensors circuitry onto the PIC microcontroller, as shown in pictures found in the appendix, using double sided tape. Then mount the entire PIC microcontroller and breadboard assembly on the top of the robot chassis with tape.
+	\item Mount the breadboard containing the sensor circuitry onto the PIC microcontroller, as shown in pictures found in the appendix, using double sided tape. Then mount the entire PIC microcontroller and breadboard assembly on the top of the robot chassis with tape.
 \end{enumerate}
 \newpage
 \section{Problem Diagnosis and Correction}
@@ -106,9 +105,9 @@ The root cause of this was that the worm gear of the motor was not aligned with 
 \textbf{Design Changes:} A screw was added to the bottom floor of the chassis to push the gear upwards. This solution was extremely effective as it solved the problem and in turn, allowed for the code to work effectively as the robot continued to move as expected.\\
 \hline
 The sensors had no impact on the robot’s decision making.
-The root cause of this issue is the erroneous code in which the GO/DONE bit was not enabled in the ADC procedure. As such, the analog signal from the sensors were never being read as digital. & Due to the code not enabling the GO/DONE bit which caused the sensors t never be read, the robot continued to go straight off the track as if the sensors were always seeing white. & \textbf{Solution:} Originally, it was thought the sensors were faulty. They were replaced but despite not having any effect and the code having been checked by several peers, the origin of the problem could not be resolved. The issue was only noticed after an example code was shown by Mr. Balcita on the sue of ADC conversion.
+The root cause of this issue is the erroneous code in which the GO/DONE bit was not enabled in the ADC procedure. As such, the analog signal from the sensors were never being read as digital. & Due to the code not enabling the GO/DONE bit which caused the sensors to never be read, the robot continued to go straight off the track as if the sensors were always seeing white. & \textbf{Solution:} Originally, it was thought the sensors were faulty. They were replaced but despite not having any effect and the code having been checked by several peers, the origin of the problem could not be resolved. The issue was only noticed after countless more hours were spent checking the code.
 
-\textbf{Design Changes} The robot was changed to use timed delays to hardcode its decision making process so that it would follow the preset track.Although extremely effective and quick, this design could have been avoided by being persistent with the light sensors.\\
+\textbf{Design Changes} No design changes.\\
 			\hline
 		\end{tabular}}
 \end{table}
@@ -116,7 +115,7 @@ The root cause of this issue is the erroneous code in which the GO/DONE bit was 
 \section{Conclusion}
 The original objective was to construct a line following robot using the assembly language to program the PIC 16F684 microcontroller. The specifications indicated using light sensors to sense a black line on a white surface that will allow the robot to complete one lap of the track made out of black electrical tape in 60 seconds.
 \\[\baselineskip]
-The robot does not meet the original objective as it is able to move around the track but not complete a full lap on the track. Additionally, the robot uses a hardcoded assembly program instead of using light sensors to follow the line.
+The robot does not meet the original objective as it is able to complete only 1/2 of a lap around the track in the allotted time.
 \newpage
 \section{Appendix}
 	\begin{SCfigure}[0.5][h]
@@ -128,5 +127,11 @@ The robot does not meet the original objective as it is able to move around the 
 	\caption{The circuit diagram shown above does not include the circuit for the QRD1114 light sensors.}
 	\end{SCfigure}
 \subsection{Final Code}
-\textit{Please refer to document within the main directory of this report for .txt code file.}
+\textit{Please refer to a separate document within the main directory of this report for a .txt code file named "Line Following Robot Assembly Code.txt".}
+\subsection{References}
+\href{http://ww1.microchip.com/downloads/en/devicedoc/41202f-print.pdf}{\textbf{PIC16F684 Microcontroller Datasheet:} http://ww1.microchip.com/downloads/en/devicedoc/41202f-print.pdf}\\
+\href{http://www.mouser.com/ds/2/405/l293d-441879.pdf}{\textbf{L293DNE Data Sheet:} http://www.mouser.com/ds/2/405/l293d-441879.pdf}\\
+\href{https://www.fairchildsemi.com/datasheets/QR/QRD1114.pdf}{\textbf{QRD1114 Data Sheet:} https://www.fairchildsemi.com/datasheets/QR/QRD1114.pdf}\\
+\href{https://www.sparkfun.com/datasheets/Components/LM7805.pdf}{\textbf{LM7805 Data Sheet:} https://www.sparkfun.com/datasheets/Components/LM7805.pdf}\\
+
 \end{document}          
